@@ -8,9 +8,15 @@ export interface ContainerSpec {
   name?: string;
   image: string;
   command?: string[];
-  workdir?: string;
-  environment?: {
-    env?: string;
+  workingDir?: string;
+  resources: {
+    limits: {
+      memory: string;
+      cpu: string;
+    };
+  };
+  env?: {
+    name?: string;
     value?: string;
   }[];
 }
