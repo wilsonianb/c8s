@@ -2,25 +2,12 @@
 import * as Boom from 'boom'
 import { Injector } from 'reduct'
 import { PodSpec } from '../schemas/PodSpec'
-import Config from './Config'
 import HyperClient from './HyperClient'
 import PodDatabase from './PodDatabase'
 import ManifestDatabase from './ManifestDatabase'
 import { checkMemory } from '../util/podResourceCheck'
 import { Transform, PassThrough } from 'stream'
 import * as multi from 'multi-read-stream'
-import {
-  block,
-  onForward,
-  udp,
-  Port,
-  toPort,
-  toPortNumberRange,
-  toInterface,
-  fromInterface,
-  reduceRule,
-  iptablesIdempotent as iptables
-} from '../util/iptables'
 import { create as createLogger } from '../common/log'
 const log = createLogger('PodManager')
 
@@ -31,14 +18,12 @@ export default class PodManager {
   private pods: PodDatabase
   private manifests: ManifestDatabase
   private hyperClient: HyperClient
-  private config: Config
 
   constructor (deps: Injector) {
     this.pods = deps(PodDatabase)
     this.manifests = deps(ManifestDatabase)
     this.hyper = deps(HyperClient)
     this.hyperClient = deps(HyperClient)
-    this.config = deps(Config)
   }
 
   public checkPodMem (memory: number | void): number {
@@ -49,12 +34,6 @@ export default class PodManager {
   }
 
   start () {
-    // Set up pod network isolation
-    if (!this.config.devMode) {
-      this.protectNetwork()
-        .catch(err => log.error(err))
-    }
-
     this.run()
       .catch(err => log.error(err))
   }
@@ -174,45 +153,5 @@ export default class PodManager {
     const podsToDelete = dbPods.filter(pod => !runningPodsSet.has(pod))
     log.debug(`delete pods=${podsToDelete}`)
     this.pods.deletePods(podsToDelete)
-  }
-
-  private async protectNetwork () {
-    // Shutdown inter-pod communication
-    let ipCommands = [block, onForward, toInterface('hyper0'), fromInterface('hyper0')]
-    await iptables(reduceRule(ipCommands))
-
-    // Block outgoing ports
-    const outgoingPorts: Port[] = [
-      [25, 'tcp'],
-      [5060, 'tcp'],
-      [5060, 'udp']
-    ]
-    for (let port of outgoingPorts) {
-      ipCommands = [block, onForward, fromInterface('hyper0'), toPort(port)]
-      await iptables(reduceRule(ipCommands))
-    }
-
-    // Block incoming ports
-    const incomingPorts: Port[] = [
-      [19, 'udp'],
-      [22, 'udp'],
-      [80, 'udp'],
-      [111, 'udp'],
-      [137, 'udp'],
-      [138, 'udp'],
-      [139, 'udp'],
-      [389, 'udp'],
-      [520, 'udp'],
-      [1900, 'udp'],
-      [5093, 'udp'],
-      [5353, 'udp'],
-      [11211, 'udp']
-    ]
-    for (let port of incomingPorts) {
-      ipCommands = [block, onForward, toInterface('hyper0'), toPort(port)]
-      await iptables(reduceRule(ipCommands))
-    }
-    ipCommands = [block, onForward, udp, toInterface('hyper0'), toPortNumberRange(33434, 33534)]
-    await iptables(reduceRule(ipCommands))
   }
 }
