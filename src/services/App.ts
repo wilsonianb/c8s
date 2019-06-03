@@ -6,9 +6,7 @@ import PeerFinder from './PeerFinder'
 import HttpServer from './HttpServer'
 import AdminServer from './AdminServer'
 import BackgroundValidatePeers from './BackgroundValidatePeers'
-import Secret from './Secret'
 import Ildcp from './Ildcp'
-import Money from './Money'
 import SelfTest from './SelfTest'
 
 import { create as createLogger } from '../common/log'
@@ -20,9 +18,7 @@ export default class App {
   private httpServer: HttpServer
   private adminServer: AdminServer
   private podManager: PodManager
-  private secret: Secret
   private ildcp: Ildcp
-  private money: Money
   private backgroundValidatePeers: BackgroundValidatePeers
   private selfTest: SelfTest
   constructor (deps: Injector) {
@@ -34,9 +30,7 @@ export default class App {
     this.httpServer = deps(HttpServer)
     this.adminServer = deps(AdminServer)
     this.podManager = deps(PodManager)
-    this.secret = deps(Secret)
     this.ildcp = deps(Ildcp)
-    this.money = deps(Money)
     this.backgroundValidatePeers = deps(BackgroundValidatePeers)
     this.selfTest = deps(SelfTest)
   }
@@ -44,10 +38,6 @@ export default class App {
   async start () {
     log.info('starting codiusd...')
     await this.ildcp.init()
-    if (!this.config.devMode) {
-      await this.secret.load()
-      await this.money.start()
-    }
     await this.httpServer.start()
     if (this.config.adminApi) {
       await this.adminServer.start()

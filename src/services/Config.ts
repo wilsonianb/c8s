@@ -35,8 +35,6 @@ export default class Config {
   readonly memdownPersist: boolean
   readonly bootstrapPeers: string[]
   readonly maxMemoryFraction: number
-  readonly ilpPlugin: string | void
-  readonly ilpCredentials: string | void
   readonly devMode: boolean
   readonly devIldcp: IldcpInfo
   readonly showAdditionalHostInfo: boolean
@@ -64,8 +62,6 @@ export default class Config {
       throw new Error('Codiusd requires CODIUS_PUBLIC_URI to be set')
     }
 
-    this.ilpPlugin = env.ILP_PLUGIN
-    this.ilpCredentials = env.ILP_CREDENTIALS
     this.hyperSock = env.CODIUS_HYPER_SOCKET || '/var/run/hyper.sock'
     this.noop = env.CODIUS_HYPER_NOOP === 'true'
     this.bindIp = env.CODIUS_BIND_IP || '127.0.0.1'
