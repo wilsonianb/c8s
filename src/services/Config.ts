@@ -77,8 +77,8 @@ export default class Config {
     this.hostCostPerMonth = setPrice()
     this.selfTestSuccess = false
     this.selfTestConfig = {
-      retryCount: Number(env.CODIUS_SELF_TEST_RETRIES) || 5,
-      retryInterval: Number(env.CODIUS_SELF_TEST_INTERVAL) * 1000 || 5000
+      retryCount: Number(env.CODIUS_SELF_TEST_RETRIES) || 6,
+      retryInterval: Number(env.CODIUS_SELF_TEST_INTERVAL) * 1000 || 10000
     }
     this.k8sNamespace = env.CODIUS_K8S_NAMESPACE || 'default'
     // Admin API Config

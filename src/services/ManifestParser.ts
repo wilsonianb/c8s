@@ -42,7 +42,8 @@ export class Manifest {
       apiVersion: 'v1',
       kind: 'Pod',
       metadata: {
-        name: this.hash
+        name: this.hash,
+        namespace: this.config.k8sNamespace
       },
       spec: {
         runtimeClassName: 'kata-qemu',

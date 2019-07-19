@@ -148,7 +148,7 @@ export default class SelfTest {
             this.httpSuccess = true
             log.info('Codius Host Self Test successfully uploaded pod')
           } catch (err) {
-            log.error('Error occurred while uploading self-test pod err=', err)
+            log.error('Error occurred while testing HTTP err=', err)
             await new Promise(resolve => {
               setTimeout(() => {
                 resolve()

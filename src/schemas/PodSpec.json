@@ -14,9 +14,12 @@
       "properties": {
         "name": {
           "type": "string"
+        },
+        "namespace": {
+          "type": "string"
         }
       },
-      "required": [ "name" ],
+      "required": [ "name", "namespace" ],
       "additionalProperties": false
     },
     "spec": {

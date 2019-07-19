@@ -9,6 +9,7 @@ export interface PodSpec {
   kind: string;
   metadata: {
     name: string;
+    namespace: string;
   };
   spec: {
     automountServiceAccountToken: boolean;
