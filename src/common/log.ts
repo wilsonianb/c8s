@@ -42,7 +42,7 @@ export const createRaw = (namespace: string): Logger => {
     stream: logStream
   })
 }
-export const create = (namespace: string) => createRaw('codiusd:' + namespace)
+export const create = (namespace: string) => createRaw('c8s:' + namespace)
 
 export const setOutputStream = (newOutputStream: NodeJS.WriteStream) => {
   logStream.unpipe(outputStream)

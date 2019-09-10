@@ -1,4 +1,4 @@
-import { PodSpec } from '../schemas/PodSpec'
+import { KnativeServiceSpec } from '../schemas/KnativeServiceSpec'
 import { ContainerSpec } from '../schemas/ContainerSpec'
 import { Injector } from 'reduct'
 import Config from './Config'
@@ -37,20 +37,27 @@ export class Manifest {
     this.privateManifest = opts.privateManifest
   }
 
-  toPodSpec (): PodSpec {
+  toKnativeServiceSpec (): KnativeServiceSpec {
     return {
-      apiVersion: 'v1',
-      kind: 'Pod',
+      apiVersion: 'serving.knative.dev/v1alpha1',
+      kind: 'Service',
       metadata: {
-        name: this.hash,
+        name: `c8s-${this.hash}`,
         namespace: this.config.k8sNamespace
       },
       spec: {
-        runtimeClassName: 'kata-qemu',
-        automountServiceAccountToken: false,
-        dnsPolicy: 'Default',
-        containers: this.manifest['containers']
-          .map(this.processContainer.bind(this))
+        template: {
+          metadata: {
+            annotations: {
+              'io.kubernetes.cri.untrusted-workload': 'true'
+            }
+          },
+          spec: {
+            serviceAccountName: this.config.k8sServiceAccount,
+            containers: this.manifest['containers']
+              .map(this.processContainer.bind(this))
+          }
+        }
       }
     }
   }
@@ -68,7 +75,10 @@ export class Manifest {
       resources: {
         limits: this.machineToResource(this.manifest['machine'])
       },
-      env: this.processEnv(container['environment'])
+      env: this.processEnv(container['environment']),
+      ports: this.manifest['port'] ? [{
+        containerPort: Number(this.manifest['port'])
+      }] : undefined
     }
   }
 
@@ -158,11 +168,11 @@ export default class ManifestParser {
     this.deps = deps
   }
 
-  manifestToPodSpec (manifest: object, privateManifest: object): PodSpec {
+  manifestToKnativeServiceSpec (manifest: object, privateManifest: object): KnativeServiceSpec {
     return new Manifest({
       deps: this.deps,
       manifest,
       privateManifest
-    }).toPodSpec()
+    }).toKnativeServiceSpec()
   }
 }

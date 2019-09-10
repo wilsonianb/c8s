@@ -1,0 +1,80 @@
+{
+  "type": "object",
+  "properties": {
+    "apiVersion": {
+      "type": "string",
+      "enum": [ "serving.knative.dev/v1alpha1" ],
+      "required": true
+    },
+    "kind": {
+      "type": "string",
+      "enum": [ "Service" ],
+      "required": true
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        }
+      },
+      "required": [ "name", "namespace" ],
+      "additionalProperties": false
+    },
+    "spec": {
+      "type": "object",
+      "properties": {
+        "template": {
+          "type": "object",
+          "properties": {
+            "metadata": {
+              "type": "object",
+              "properties": {
+                "annotations": {
+                  "type": "object",
+                  "properties": {
+                    "io.kubernetes.cri.untrusted-workload": {
+                      "type": "string",
+                      "enum": [ "true" ]
+                    }
+                  },
+                  "required": [ "io.kubernetes.cri.untrusted-workload" ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [ "annotations" ],
+              "additionalProperties": false
+            },
+            "spec": {
+              "type": "object",
+              "properties": {
+                "serviceAccountName": {
+                  "type": "string"
+                },
+                "containers": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "./ContainerSpec.json"
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              },
+              "required": [ "serviceAccountName", "containers" ],
+              "additionalProperties": false
+            }
+          },
+          "required": [ "metadata", "spec" ],
+          "additionalProperties": false
+        }
+      },
+      "required": [ "template" ],
+      "additionalProperties": false
+    }
+  },
+  "required": [ "apiVersion", "kind", "metadata", "spec" ],
+  "additionalProperties": false
+}

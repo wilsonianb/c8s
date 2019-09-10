@@ -7,10 +7,7 @@
     "containers": [
       {
         "id": "codius-test",
-        "image": "androswong418/codius-test-image@sha256:0dce885c4e558a8a7612b80e3c7f5faa54520ed27836b1f892962cf855d031a2",
-        "environment": {
-          "PORT": "3000"
-        }
+        "image": "androswong418/codius-test-image@sha256:0dce885c4e558a8a7612b80e3c7f5faa54520ed27836b1f892962cf855d031a2"
       }
     ]
   },

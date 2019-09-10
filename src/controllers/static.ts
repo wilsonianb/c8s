@@ -1,38 +1,27 @@
-import * as Hapi from 'hapi'
+import * as Hapi from '@hapi/hapi'
+import * as React from 'react'
+import { renderToString } from 'react-dom/server'
 import { Injector } from 'reduct'
-import { serverInfo } from '../util/serverInfo'
-import PeerDatabase from '../services/PeerDatabase'
-import PodManager from '../services/PodManager'
+import AppComponent from '../public/components/App'
 import Config from '../services/Config'
-import Ildcp from '../services/Ildcp'
-import Version from '../services/Version'
-import SelfTest from '../services/SelfTest'
-import { HostInfo } from '../schemas/HostInfo'
+import * as path from 'path'
+
+const App = React.createFactory(AppComponent)
 
 export default function (server: Hapi.Server, deps: Injector) {
-  const peerDb = deps(PeerDatabase)
-  const podManager = deps(PodManager)
-
   const config = deps(Config)
-  const ildcp = deps(Ildcp)
-  const selfTest = deps(SelfTest)
-  const ver = deps(Version)
 
   async function getIndex (request: Hapi.Request, h: Hapi.ResponseToolkit) {
-    const hostInfo: HostInfo = serverInfo(config, ildcp, podManager, peerDb, selfTest)
-    const freeMemRaw = hostInfo.serverFreeMemory
-    const formatFreeMem = (memory: number) => { return (Math.floor(memory / 1e9)) > 0 ? ((memory / 1000000000).toFixed(3)).toString() + ' gigabytes' : ((memory / 1000000).toFixed(3)).toString() + ' megabytes' }
+    const state = {
+      // TODO: set min version in config
+      // codiusVersion: config.version.codius.min
+      codiusVersion: '2.0.0'
+    }
+
     return h.view('index', {
-      uri: hostInfo.uri,
-      numPeers: hostInfo.numPeers,
-      serverUptime: hostInfo.serverUptime,
-      serviceUptime: hostInfo.serviceUptime,
-      avgLoad: hostInfo.avgLoad,
-      currency: hostInfo.currency,
-      costPerMonth: hostInfo.costPerMonth,
-      fullMem: hostInfo.fullMem,
-      freeMem: freeMemRaw ? formatFreeMem(freeMemRaw) : 'N/A',
-      version: ver.getVersion()
+      component: renderToString(App(state)),
+      paymentPointer: config.paymentPointer,
+      state: `window.__INITIAL_PROPS__ = ${JSON.stringify(state)}`
     })
   }
 

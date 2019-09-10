@@ -43,6 +43,9 @@
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
+                },
+                "not": {
+                  "required": [ "PORT" ]
                 }
               }
             },

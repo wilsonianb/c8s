@@ -1,18 +1,13 @@
-import * as Hapi from 'hapi'
-import registerVersionController from '../controllers/version'
+import * as Hapi from '@hapi/hapi'
+import registerContainersController from '../controllers/containers'
 import registerStaticController from '../controllers/static'
-import registerPeersController from '../controllers/peers'
-import registerPodsController from '../controllers/pods'
-import registerProxyController from '../controllers/proxy'
-import registerInfoController from '../controllers/info'
 import SelfTestCheck from '../services/SelfTestCheck'
 import { Injector } from 'reduct'
-import * as Inert from 'inert'
-import * as Vision from 'vision'
+import * as Inert from '@hapi/inert'
+import * as Vision from '@hapi/vision'
 import * as Handlebars from 'handlebars'
 import * as path from 'path'
 import Config from './Config'
-const { HapiCog } = require('@sharafian/cog')
 
 import { create as createLogger } from '../common/log'
 const log = createLogger('HttpServer')
@@ -40,16 +35,11 @@ export default class HttpServer {
       }
     })
 
-    registerVersionController(this.server, deps)
+    registerContainersController(this.server, deps)
     registerStaticController(this.server, deps)
-    registerPeersController(this.server, deps)
-    registerPodsController(this.server, deps)
-    registerProxyController(this.server, deps)
-    registerInfoController(this.server, deps)
   }
 
   async start () {
-    await this.server.register({ plugin: require('h2o2') })
     await this.server.register(this.selfTestCheck.checkSelfTestPlugin)
     await this.server.register(Inert)
     await this.server.register(Vision)
@@ -58,19 +48,20 @@ export default class HttpServer {
         html: Handlebars
       },
       relativeTo: path.resolve(__dirname, '../'),
-      path: 'templates'
+      path: 'public/templates'
     })
 
-    if (!this.config.devMode) {
-      await this.server.register(HapiCog)
-    }
+    this.server.route({
+      method: 'GET',
+      path: '/assets/client.js',
+      handler: {
+        file: path.join(__dirname, '../public/assets/client.js')
+      }
+    })
+
     await this.server.start()
 
     log.info('listening at %s', this.server.info.uri)
-  }
-
-  getUrl () {
-    return this.server.info.uri
   }
 
   getServer () {

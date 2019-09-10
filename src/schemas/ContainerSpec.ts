@@ -15,6 +15,9 @@ export interface ContainerSpec {
       cpu: string;
     };
   };
+  ports?: {
+    containerPort?: number;
+  }[];
   env?: {
     name?: string;
     value?: string;

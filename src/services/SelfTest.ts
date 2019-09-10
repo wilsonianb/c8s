@@ -3,13 +3,10 @@ import Config from './Config'
 import { SelfTestConfig } from '../schemas/SelfTestConfig'
 import { SelfTestStats } from '../schemas/SelfTestStats'
 import { create as createLogger } from '../common/log'
-const ilpFetch = require('ilp-fetch')
-const Price = require('ilp-price')
 const log = createLogger('SelfTest')
 import * as WebSocket from 'ws'
 const manifestJson = require('../util/self-test-manifest.json')
 import axios from 'axios'
-import BigNumber from 'bignumber.js'
 import * as crypto from 'crypto'
 export default class SelfTest {
   public selfTestSuccess: boolean
@@ -43,50 +40,30 @@ export default class SelfTest {
     }
   }
 
-  async getPrice (manifestJson: object): Promise<BigNumber.Value> {
-    const host = this.config.publicUri
-    const token = this.config.bearerToken
-    let response = await ilpFetch(`${host}/pods`, {
-      headers: {
-        Accept: `application/codius-v1+json`,
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      maxPrice: '0',
-      method: 'OPTIONS',
-      body: JSON.stringify(manifestJson),
-      timeout: 70000 // 1m10s
-    })
-    const quote = await response.json()
-    const ilpPrice = new Price()
-    const unscaledQuote = new BigNumber(quote.price).dividedBy(Math.pow(10, response.destination.assetScale))
-    return new BigNumber(await ilpPrice.fetch(response.destination.assetCode, unscaledQuote))
-  }
-
-  async retryFetch (count: number, manifestJson: object, price: BigNumber.Value): Promise<any> {
-    const duration = 300
-    const host = this.config.publicUri
-    const token = this.config.bearerToken
-    let response = await ilpFetch(`${host}/pods?duration=${duration}`, {
-      headers: {
-        Accept: `application/codius-v1+json`,
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      maxPrice: price.toString(),
-      method: 'POST',
-      body: JSON.stringify(manifestJson),
-      timeout: 70000 // 1m10s
-    })
-    if (count > 1 && !this.checkStatus(response)) {
-      await new Promise(resolve => {
-        setTimeout(() => {
-          resolve()
-        }, this.testConfig.retryInterval)
+  async retryFetch (count: number, manifestJson: object): Promise<any> {
+    try {
+      const host = this.config.publicUri
+      const token = this.config.bearerToken
+      let response = await axios.post(`${host}/containers`, JSON.stringify(manifestJson), {
+        headers: {
+          Accept: `application/codius-v1+json`,
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        timeout: 70000 // 1m10s
       })
-      return this.retryFetch(count - 1, manifestJson, price)
-    } else {
       return response
+    } catch (err) {
+      if (count > 1) {
+        await new Promise(resolve => {
+          setTimeout(() => {
+            resolve()
+          }, this.testConfig.retryInterval)
+        })
+        return this.retryFetch(count - 1, manifestJson)
+      } else {
+        return err.response
+      }
     }
   }
 
@@ -95,14 +72,12 @@ export default class SelfTest {
       const randomName = crypto.randomBytes(20).toString('hex')
       manifestJson['manifest']['name'] = randomName
       log.debug('manifestJson', manifestJson)
-      const price = await this.getPrice(manifestJson)
-      let response = await this.retryFetch(this.testConfig.retryCount, manifestJson, price)
-      log.trace('ilpFetch Resp', response)
+      let response = await this.retryFetch(this.testConfig.retryCount, manifestJson)
+      log.trace('Post Resp', response)
       if (this.checkStatus(response)) {
-        log.info('Pod upload successful')
+        log.info('Container upload successful')
         // Maybe check status in 30 seconds interval twice.
-        response = await response.json()
-        const url = new URL(this.config.publicUri)
+        const url = new URL(response.data.url)
         await new Promise((resolve, reject) => {
           setTimeout(() => {
             resolve()
@@ -113,7 +88,7 @@ export default class SelfTest {
         const serverPromise = () => {
           return new Promise(async (resolve, reject) => {
             try {
-              const serverRes = await axios.get(`https://${response.manifestHash}.${url.host}`)
+              const serverRes = await axios.get(`${url.href}`)
               const serverCheck = serverRes.data
               log.debug('Pod HTTP request succeeded', serverCheck)
               if (serverCheck.imageUploaded) {
@@ -146,7 +121,7 @@ export default class SelfTest {
               serverTimeoutPromise()
             ])
             this.httpSuccess = true
-            log.info('Codius Host Self Test successfully uploaded pod')
+            log.info('Codius Host Self Test successfully deployed container')
           } catch (err) {
             log.error('Error occurred while testing HTTP err=', err)
             await new Promise(resolve => {
@@ -162,7 +137,7 @@ export default class SelfTest {
 
         const webSocketPromise = () => {
           return new Promise((resolve, reject) => {
-            const ws = new WebSocket(`wss://${response.manifestHash}.${url.host}`)
+            const ws = new WebSocket(`${url.protocol === 'https' ? 'wss' : 'ws'}://${url.host}`)
             ws.on('open', () => {
               log.debug('Web sockets Pod received request')
             })
@@ -230,12 +205,12 @@ export default class SelfTest {
     if (response && response.status) {
       const statusString = `${response.status}`
       if (statusString.startsWith('2')) {
-        log.info('Pod upload returned %s', statusString)
+        log.info('Container upload returned %s', statusString)
         this.uploadSuccess = true
         return true
       }
     }
-    log.error('Pod upload failed')
+    log.error('Container upload failed')
     return false
   }
 

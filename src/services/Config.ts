@@ -1,45 +1,16 @@
 import * as crypto from 'crypto'
-import { IldcpInfo } from '../schemas/IldcpInfo'
 import { Injector } from 'reduct'
 import { SelfTestConfig } from '../schemas/SelfTestConfig'
-
-const DEFAULT_BOOTSTRAP_PEERS = [
-  'https://codius.justmoon.com',
-  'https://codius.andros-connector.com',
-  'https://codius.risky.business',
-  'https://codius.feraltc.com',
-  'https://codius.tinypolarbear.com',
-  'https://x1.codiushost.com'
-]
-
-function setPrice () {
-
-  if (process.env.CODIUS_COST_PER_MONTH) {
-    return Number(process.env.CODIUS_COST_PER_MONTH)
-  } else if (process.env.COST_PER_MONTH) {
-    return Number(process.env.COST_PER_MONTH)
-  } else if (process.env.CODIUS_XRP_PER_MONTH) {
-    return Number(process.env.CODIUS_XRP_PER_MONTH)
-  }
-  return 10
-}
 
 export default class Config {
   readonly bearerToken: string
   readonly port: number
   readonly bindIp: string
+  readonly paymentPointer: string
   readonly publicUri: string
-  readonly codiusRoot: string
-  readonly memdownPersist: boolean
-  readonly bootstrapPeers: string[]
-  readonly maxMemoryFraction: number
   readonly devMode: boolean
-  readonly devIldcp: IldcpInfo
-  readonly showAdditionalHostInfo: boolean
   readonly k8sNamespace: string
-  hostCostPerMonth: number
-  readonly adminApi: boolean
-  readonly adminPort: number
+  readonly k8sServiceAccount: string
   selfTestSuccess: boolean
   selfTestConfig: SelfTestConfig
 
@@ -61,28 +32,20 @@ export default class Config {
       throw new Error('Codiusd requires CODIUS_PUBLIC_URI to be set')
     }
 
-    this.bindIp = env.CODIUS_BIND_IP || '127.0.0.1'
-    this.codiusRoot = env.CODIUS_ROOT || '/var/lib/codius'
-    this.memdownPersist = env.CODIUS_MEMDOWN_PERSIST === 'true'
-    this.bootstrapPeers = env.CODIUS_BOOTSTRAP_PEERS
-      ? JSON.parse(env.CODIUS_BOOTSTRAP_PEERS)
-      : DEFAULT_BOOTSTRAP_PEERS
-    this.maxMemoryFraction = Number(env.CODIUS_MAX_MEMORY_FRACTION) || 0.75
-    this.showAdditionalHostInfo = env.CODIUS_ADDITIONAL_HOST_INFO ? env.CODIUS_ADDITIONAL_HOST_INFO === 'true' : true
-    this.devIldcp = {
-      clientAddress: 'dev.client',
-      assetCode: 'DEV',
-      assetScale: 3
+    if (env.CODIUS_PAYMENT_POINTER) {
+      this.paymentPointer = env.CODIUS_PAYMENT_POINTER
+    } else {
+      throw new Error('Codiusd requires CODIUS_PAYMENT_POINTER to be set')
     }
-    this.hostCostPerMonth = setPrice()
+
+    this.bindIp = env.CODIUS_BIND_IP || '127.0.0.1'
+
     this.selfTestSuccess = false
     this.selfTestConfig = {
       retryCount: Number(env.CODIUS_SELF_TEST_RETRIES) || 6,
       retryInterval: Number(env.CODIUS_SELF_TEST_INTERVAL) * 1000 || 10000
     }
     this.k8sNamespace = env.CODIUS_K8S_NAMESPACE || 'default'
-    // Admin API Config
-    this.adminApi = env.CODIUS_ADMIN_API === 'true'
-    this.adminPort = Number(env.CODIUS_ADMIN_PORT) || 3001
+    this.k8sServiceAccount = env.CODIUS_K8S_SERVICE_ACCOUNT || 'default'
   }
 }
