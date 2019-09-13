@@ -4,7 +4,10 @@ const Path = require('path');
 
 
 module.exports = {
-    entry: Path.join(__dirname, './src/public/client.js'),
+    entry: {
+        app: './src/public/app.js',
+        proxy: './src/public/proxy.js',
+    },
     // mode: 'production',
     mode: 'development',
     resolve: {
@@ -12,7 +15,7 @@ module.exports = {
     },
     output: {
         path: Path.resolve(__dirname),
-        filename: './src/public/assets/client.js'
+        filename: './src/public/assets/[name].bundle.js'
     // },
     // module: {
     //     rules: [{

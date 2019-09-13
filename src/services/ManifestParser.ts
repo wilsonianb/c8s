@@ -42,8 +42,14 @@ export class Manifest {
       apiVersion: 'serving.knative.dev/v1alpha1',
       kind: 'Service',
       metadata: {
-        name: `c8s-${this.hash}`,
-        namespace: this.config.k8sNamespace
+        name: `proxy-${this.hash}`,
+        namespace: this.config.k8sNamespace,
+        labels: {
+          'serving.knative.dev/visibility': 'cluster-local'
+        },
+        annotations: {
+          manifestHash: this.hash
+        }
       },
       spec: {
         template: {

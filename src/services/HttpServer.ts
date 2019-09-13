@@ -1,6 +1,7 @@
 import * as Hapi from '@hapi/hapi'
 import registerContainersController from '../controllers/containers'
 import registerStaticController from '../controllers/static'
+import registerProxyController from '../controllers/proxy'
 import SelfTestCheck from '../services/SelfTestCheck'
 import { Injector } from 'reduct'
 import * as Inert from '@hapi/inert'
@@ -37,9 +38,11 @@ export default class HttpServer {
 
     registerContainersController(this.server, deps)
     registerStaticController(this.server, deps)
+    registerProxyController(this.server, deps)
   }
 
   async start () {
+    await this.server.register({ plugin: require('@hapi/h2o2') })
     await this.server.register(this.selfTestCheck.checkSelfTestPlugin)
     await this.server.register(Inert)
     await this.server.register(Vision)
@@ -53,9 +56,17 @@ export default class HttpServer {
 
     this.server.route({
       method: 'GET',
-      path: '/assets/client.js',
+      path: '/assets/app.bundle.js',
       handler: {
-        file: path.join(__dirname, '../public/assets/client.js')
+        file: path.join(__dirname, '../public/assets/app.bundle.js')
+      }
+    })
+
+    this.server.route({
+      method: 'GET',
+      path: '/assets/proxy.bundle.js',
+      handler: {
+        file: path.join(__dirname, '../public/assets/proxy.bundle.js')
       }
     })
 

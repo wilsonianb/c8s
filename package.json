@@ -44,6 +44,7 @@
     "url": "https://github.com/codius/codiusd/issues"
   },
   "dependencies": {
+    "@hapi/h2o2": "^8.3.2",
     "@hapi/hapi": "^18.3.2",
     "@hapi/inert": "^5.2.1",
     "@hapi/vision": "^5.5.3",
@@ -54,6 +55,7 @@
     "enjoi": "^3.2.3",
     "formik": "^1.5.8",
     "handlebars": "^4.2.0",
+    "http-proxy": "^1.17.0",
     "kubernetes-client": "^8.3.4",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",

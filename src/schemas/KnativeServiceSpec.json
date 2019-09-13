@@ -19,9 +19,30 @@
         },
         "namespace": {
           "type": "string"
+        },
+        "labels": {
+          "type": "object",
+          "properties": {
+            "serving.knative.dev/visibility": {
+              "type": "string",
+              "enum": [ "cluster-local" ]
+            }
+          },
+          "required": [ "serving.knative.dev/visibility" ],
+          "additionalProperties": false
+        },
+        "annotations": {
+          "type": "object",
+          "properties": {
+            "manifestHash": {
+              "type": "string"
+            }
+          },
+          "required": [ "manifestHash" ],
+          "additionalProperties": false
         }
       },
-      "required": [ "name", "namespace" ],
+      "required": [ "name", "namespace", "labels", "annotations" ],
       "additionalProperties": false
     },
     "spec": {

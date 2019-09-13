@@ -28,11 +28,14 @@ export default function (server: Hapi.Server, deps: Injector) {
     log.debug('serviceSpec', JSON.stringify(serviceSpec, null, 2))
 
     // TODO: check capacity in k8s cluster
-    const url = await kubernetesClient.createKnativeService(serviceSpec)
 
+    await kubernetesClient.createKnativeService(serviceSpec)
+
+    const { manifestHash } = serviceSpec.metadata.annotations
     return {
-      url,
-      manifestHash: serviceSpec.metadata.name
+      // TODO https
+      url: `http://${manifestHash}.${request.info.host}`,
+      manifestHash
     }
   }
 

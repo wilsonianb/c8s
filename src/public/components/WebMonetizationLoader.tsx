@@ -9,7 +9,7 @@ const WebMonetizationLoader: React.FC = ({ children }) => {
   } else if (monetizationState === 'started') {
     return <>{children}</>
   } else {
-    return <p>Sorry! You need Web Monetization to view this content.</p>
+    return <p>Sorry! You need <a href='https://webmonetization.org'>Web Monetization</a> to view this content.</p>
   }
 }
 
