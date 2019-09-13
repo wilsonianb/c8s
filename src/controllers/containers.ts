@@ -1,7 +1,9 @@
 import { Server, ResponseToolkit } from '@hapi/hapi'
 import Boom from 'boom'
 import { Injector } from 'reduct'
+import { URL } from 'url'
 import { ContainerRequest } from '../schemas/ContainerRequest'
+import Config from '../services/Config'
 import KubernetesClient from '../services/KubernetesClient'
 import ManifestParser from '../services/ManifestParser'
 const Enjoi = require('enjoi')
@@ -16,6 +18,7 @@ export interface PostContainerResponse {
 }
 
 export default function (server: Server, deps: Injector) {
+  const config = deps(Config)
   const kubernetesClient = deps(KubernetesClient)
   const manifestParser = deps(ManifestParser)
 
@@ -32,9 +35,12 @@ export default function (server: Server, deps: Injector) {
     await kubernetesClient.createKnativeService(serviceSpec)
 
     const { manifestHash } = serviceSpec.metadata.annotations
+
+    const url = new URL(config.publicUri)
+    url.host = manifestHash + '.' + url.host
+
     return {
-      // TODO https
-      url: `http://${manifestHash}.${request.info.host}`,
+      url: url.href,
       manifestHash
     }
   }
