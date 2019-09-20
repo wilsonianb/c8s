@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`static controller responds with static index.html 1`] = `
+"<html>
+  <head>
+    <meta name='monetization' content=codius.org/local />
+    <script>
+      window.__INITIAL_PROPS__ = {\\"codiusVersion\\":\\"2.0.0\\"}
+    </script>
+  </head>
+  <body>
+    <div className=\\"App\\" id=\\"App\\">
+      &lt;p data-reactroot&#x3D;&quot;&quot;&gt;Sorry! You need &lt;a href&#x3D;&quot;https://webmonetization.org&quot;&gt;Web Monetization&lt;/a&gt; to view this content.&lt;/p&gt;
+    </div>
+    <script src=/assets/app.bundle.js></script>
+  </body>
+</html>
+"
+`;

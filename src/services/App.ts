@@ -19,6 +19,7 @@ export default class App {
   async start () {
     log.info('starting c8s...')
     await this.kubernetesClient.start()
+    await this.httpServer.init()
     await this.httpServer.start()
     // this.selfTest.start()
   }

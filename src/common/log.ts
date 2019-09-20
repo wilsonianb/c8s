@@ -1,6 +1,6 @@
-import * as riverpig from 'riverpig'
-import * as debug from 'debug'
-import * as through2 from 'through2'
+import riverpig from 'riverpig'
+import debug from 'debug'
+import through2 from 'through2'
 type LoggerConfig = riverpig.LoggerConfig
 
 let outputStream = process.stdout

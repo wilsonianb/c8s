@@ -1,0 +1,353 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ContainerForm /> matches snapshot 1`] = `
+<WithFormik(InnerForm)
+  codiusVersion="0.0.1"
+>
+  <Formik
+    codiusVersion="0.0.1"
+    displayName="ContainerForm"
+    enableReinitialize={false}
+    handleSubmit={[Function]}
+    initialValues={
+      Object {
+        "envVars": Array [],
+        "image": "",
+        "port": 8080,
+      }
+    }
+    isInitialValid={false}
+    onSubmit={[Function]}
+    render={[Function]}
+    validate={[Function]}
+    validateOnBlur={true}
+    validateOnChange={true}
+  >
+    <InnerForm
+      codiusVersion="0.0.1"
+      dirty={false}
+      errors={Object {}}
+      handleBlur={[Function]}
+      handleChange={[Function]}
+      handleReset={[Function]}
+      handleSubmit={[Function]}
+      initialValues={
+        Object {
+          "envVars": Array [],
+          "image": "",
+          "port": 8080,
+        }
+      }
+      isSubmitting={false}
+      isValid={false}
+      isValidating={false}
+      registerField={[Function]}
+      resetForm={[Function]}
+      setError={[Function]}
+      setErrors={[Function]}
+      setFieldError={[Function]}
+      setFieldTouched={[Function]}
+      setFieldValue={[Function]}
+      setFormikState={[Function]}
+      setStatus={[Function]}
+      setSubmitting={[Function]}
+      setTouched={[Function]}
+      setValues={[Function]}
+      submitCount={0}
+      submitForm={[Function]}
+      touched={Object {}}
+      unregisterField={[Function]}
+      validateField={[Function]}
+      validateForm={[Function]}
+      validateOnBlur={true}
+      validateOnChange={true}
+      values={
+        Object {
+          "envVars": Array [],
+          "image": "",
+          "port": 8080,
+        }
+      }
+    >
+      <Form>
+        <Component
+          formik={
+            Object {
+              "dirty": false,
+              "errors": Object {},
+              "handleBlur": [Function],
+              "handleChange": [Function],
+              "handleReset": [Function],
+              "handleSubmit": [Function],
+              "initialValues": Object {
+                "envVars": Array [],
+                "image": "",
+                "port": 8080,
+              },
+              "isSubmitting": false,
+              "isValid": false,
+              "isValidating": false,
+              "registerField": [Function],
+              "resetForm": [Function],
+              "setError": [Function],
+              "setErrors": [Function],
+              "setFieldError": [Function],
+              "setFieldTouched": [Function],
+              "setFieldValue": [Function],
+              "setFormikState": [Function],
+              "setStatus": [Function],
+              "setSubmitting": [Function],
+              "setTouched": [Function],
+              "setValues": [Function],
+              "status": undefined,
+              "submitCount": 0,
+              "submitForm": [Function],
+              "touched": Object {},
+              "unregisterField": [Function],
+              "validate": [Function],
+              "validateField": [Function],
+              "validateForm": [Function],
+              "validateOnBlur": true,
+              "validateOnChange": true,
+              "validationSchema": undefined,
+              "values": Object {
+                "envVars": Array [],
+                "image": "",
+                "port": 8080,
+              },
+            }
+          }
+        >
+          <form
+            onReset={[Function]}
+            onSubmit={[Function]}
+          >
+            <label>
+              Docker container image URL:
+              <FormikConnect(FieldInner)
+                autoFocus={true}
+                name="image"
+                placeholder="docker.io/user/image:tag"
+                type="text"
+              >
+                <FieldInner
+                  autoFocus={true}
+                  formik={
+                    Object {
+                      "dirty": false,
+                      "errors": Object {},
+                      "handleBlur": [Function],
+                      "handleChange": [Function],
+                      "handleReset": [Function],
+                      "handleSubmit": [Function],
+                      "initialValues": Object {
+                        "envVars": Array [],
+                        "image": "",
+                        "port": 8080,
+                      },
+                      "isSubmitting": false,
+                      "isValid": false,
+                      "isValidating": false,
+                      "registerField": [Function],
+                      "resetForm": [Function],
+                      "setError": [Function],
+                      "setErrors": [Function],
+                      "setFieldError": [Function],
+                      "setFieldTouched": [Function],
+                      "setFieldValue": [Function],
+                      "setFormikState": [Function],
+                      "setStatus": [Function],
+                      "setSubmitting": [Function],
+                      "setTouched": [Function],
+                      "setValues": [Function],
+                      "status": undefined,
+                      "submitCount": 0,
+                      "submitForm": [Function],
+                      "touched": Object {},
+                      "unregisterField": [Function],
+                      "validate": [Function],
+                      "validateField": [Function],
+                      "validateForm": [Function],
+                      "validateOnBlur": true,
+                      "validateOnChange": true,
+                      "validationSchema": undefined,
+                      "values": Object {
+                        "envVars": Array [],
+                        "image": "",
+                        "port": 8080,
+                      },
+                    }
+                  }
+                  name="image"
+                  placeholder="docker.io/user/image:tag"
+                  type="text"
+                >
+                  <input
+                    autoFocus={true}
+                    name="image"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    placeholder="docker.io/user/image:tag"
+                    type="text"
+                    value=""
+                  />
+                </FieldInner>
+              </FormikConnect(FieldInner)>
+            </label>
+            <br />
+            <label>
+              Port:
+              <FormikConnect(FieldInner)
+                max="65535"
+                min="1"
+                name="port"
+                type="number"
+              >
+                <FieldInner
+                  formik={
+                    Object {
+                      "dirty": false,
+                      "errors": Object {},
+                      "handleBlur": [Function],
+                      "handleChange": [Function],
+                      "handleReset": [Function],
+                      "handleSubmit": [Function],
+                      "initialValues": Object {
+                        "envVars": Array [],
+                        "image": "",
+                        "port": 8080,
+                      },
+                      "isSubmitting": false,
+                      "isValid": false,
+                      "isValidating": false,
+                      "registerField": [Function],
+                      "resetForm": [Function],
+                      "setError": [Function],
+                      "setErrors": [Function],
+                      "setFieldError": [Function],
+                      "setFieldTouched": [Function],
+                      "setFieldValue": [Function],
+                      "setFormikState": [Function],
+                      "setStatus": [Function],
+                      "setSubmitting": [Function],
+                      "setTouched": [Function],
+                      "setValues": [Function],
+                      "status": undefined,
+                      "submitCount": 0,
+                      "submitForm": [Function],
+                      "touched": Object {},
+                      "unregisterField": [Function],
+                      "validate": [Function],
+                      "validateField": [Function],
+                      "validateForm": [Function],
+                      "validateOnBlur": true,
+                      "validateOnChange": true,
+                      "validationSchema": undefined,
+                      "values": Object {
+                        "envVars": Array [],
+                        "image": "",
+                        "port": 8080,
+                      },
+                    }
+                  }
+                  max="65535"
+                  min="1"
+                  name="port"
+                  type="number"
+                >
+                  <input
+                    max="65535"
+                    min="1"
+                    name="port"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    type="number"
+                    value={8080}
+                  />
+                </FieldInner>
+              </FormikConnect(FieldInner)>
+            </label>
+            <br />
+            <br />
+            <FormikConnect(FieldArrayInner)
+              name="envVars"
+              render={[Function]}
+            >
+              <FieldArrayInner
+                formik={
+                  Object {
+                    "dirty": false,
+                    "errors": Object {},
+                    "handleBlur": [Function],
+                    "handleChange": [Function],
+                    "handleReset": [Function],
+                    "handleSubmit": [Function],
+                    "initialValues": Object {
+                      "envVars": Array [],
+                      "image": "",
+                      "port": 8080,
+                    },
+                    "isSubmitting": false,
+                    "isValid": false,
+                    "isValidating": false,
+                    "registerField": [Function],
+                    "resetForm": [Function],
+                    "setError": [Function],
+                    "setErrors": [Function],
+                    "setFieldError": [Function],
+                    "setFieldTouched": [Function],
+                    "setFieldValue": [Function],
+                    "setFormikState": [Function],
+                    "setStatus": [Function],
+                    "setSubmitting": [Function],
+                    "setTouched": [Function],
+                    "setValues": [Function],
+                    "status": undefined,
+                    "submitCount": 0,
+                    "submitForm": [Function],
+                    "touched": Object {},
+                    "unregisterField": [Function],
+                    "validate": [Function],
+                    "validateField": [Function],
+                    "validateForm": [Function],
+                    "validateOnBlur": true,
+                    "validateOnChange": true,
+                    "validationSchema": undefined,
+                    "values": Object {
+                      "envVars": Array [],
+                      "image": "",
+                      "port": 8080,
+                    },
+                  }
+                }
+                name="envVars"
+                render={[Function]}
+                validateOnChange={true}
+              >
+                <div>
+                  <button
+                    onClick={[Function]}
+                    type="button"
+                  >
+                    Add environment variable
+                  </button>
+                </div>
+              </FieldArrayInner>
+            </FormikConnect(FieldArrayInner)>
+            <br />
+            <button
+              disabled={false}
+              type="submit"
+            >
+              Run Container
+            </button>
+            <br />
+            <br />
+            <br />
+          </form>
+        </Component>
+      </Form>
+    </InnerForm>
+  </Formik>
+</WithFormik(InnerForm)>
+`;

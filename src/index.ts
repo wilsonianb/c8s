@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import App from './services/App'
-import * as reduct from 'reduct'
+import reduct from 'reduct'
 import { create as createLogger } from './common/log'
 const log = createLogger('index')
 

@@ -6,7 +6,7 @@ import { create as createLogger } from '../common/log'
 const log = createLogger('SelfTest')
 const manifestJson = require('../util/self-test-manifest.json')
 import axios from 'axios'
-import * as crypto from 'crypto'
+import { randomBytes } from 'crypto'
 export default class SelfTest {
   public selfTestSuccess: boolean
   private uploadSuccess: boolean
@@ -66,7 +66,7 @@ export default class SelfTest {
 
   async run () {
     try {
-      const randomName = crypto.randomBytes(20).toString('hex')
+      const randomName = randomBytes(20).toString('hex')
       manifestJson['manifest']['name'] = randomName
       log.debug('manifestJson', manifestJson)
       let response = await this.retryFetch(this.testConfig.retryCount, manifestJson)

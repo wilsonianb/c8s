@@ -41,7 +41,7 @@ export default class HttpServer {
     registerProxyController(this.server, deps)
   }
 
-  async start () {
+  async init () {
     await this.server.register({ plugin: require('@hapi/h2o2') })
     await this.server.register(this.selfTestCheck.checkSelfTestPlugin)
     await this.server.register(Inert)
@@ -69,10 +69,19 @@ export default class HttpServer {
         file: path.join(__dirname, '../public/assets/proxy.bundle.js')
       }
     })
+    await this.server.initialize()
+  }
 
+  async start () {
     await this.server.start()
 
     log.info('listening at %s', this.server.info.uri)
+  }
+
+  async stop () {
+    await this.server.stop()
+
+    log.info('server stopped')
   }
 
   getServer () {

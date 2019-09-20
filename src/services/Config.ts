@@ -1,4 +1,4 @@
-import * as crypto from 'crypto'
+import { randomBytes } from 'crypto'
 import { Injector } from 'reduct'
 import { SelfTestConfig } from '../schemas/SelfTestConfig'
 
@@ -19,7 +19,7 @@ export default class Config {
     if (typeof env === 'function') {
       env = process.env
     }
-    this.bearerToken = crypto.randomBytes(32).toString('hex')
+    this.bearerToken = randomBytes(32).toString('hex')
 
     this.devMode = env.CODIUS_DEV === 'true' || env.NODE_ENV === 'test'
 
@@ -34,6 +34,8 @@ export default class Config {
 
     if (env.CODIUS_PAYMENT_POINTER) {
       this.paymentPointer = env.CODIUS_PAYMENT_POINTER
+    } else if (this.devMode) {
+      this.paymentPointer = ('codius.org/local')
     } else {
       throw new Error('Codiusd requires CODIUS_PAYMENT_POINTER to be set')
     }

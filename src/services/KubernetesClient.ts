@@ -1,7 +1,8 @@
 import { Client1_13 } from 'kubernetes-client'
+const { KubeConfig } = require('kubernetes-client')
 const Request = require('kubernetes-client/backends/request')
 import { KnativeServiceSpec } from '../schemas/KnativeServiceSpec'
-import * as Boom from 'boom'
+import Boom from 'boom'
 import Config from './Config'
 import { Injector } from 'reduct'
 
@@ -15,17 +16,15 @@ export default class KubernetesClient {
   constructor (deps: Injector) {
     this.config = deps(Config)
 
-    const devConfig = {
-      auth: {
-        bearer: 'token'
-      },
-      ca: 'ca',
-      namespace: 'namespace',
-      url: 'https://host:443'
+    const kubeconfig = new KubeConfig()
+
+    if (this.config.devMode) {
+      kubeconfig.loadFromDefault()
+    } else {
+      kubeconfig.loadFromCluster()
     }
 
-    const k8sConfig = this.config.devMode ? devConfig : Request.config.getInCluster()
-    this.client = new Client1_13({ backend: new Request(k8sConfig) })
+    this.client = new Client1_13({ backend: new Request({ kubeconfig }) })
   }
 
   async start () {
@@ -34,11 +33,11 @@ export default class KubernetesClient {
     this.client.addCustomResourceDefinition(resp.body)
   }
 
-  async createKnativeService (serviceSpec: KnativeServiceSpec): Promise<string> {
+  async createKnativeService (serviceSpec: KnativeServiceSpec): Promise<void> {
     log.info('creating Knative service:', serviceSpec.metadata.name)
     try {
       await this.client.apis['serving.knative.dev'].v1alpha1.namespaces(this.config.k8sNamespace).services.post({ body: serviceSpec })
-      return new Promise<string>(async (resolve, reject) => {
+      return new Promise<void>(async (resolve, reject) => {
         const stream = await this.client.apis['serving.knative.dev'].v1alpha1.watch.namespaces(this.config.k8sNamespace).services(serviceSpec.metadata.name).getObjectStream()
 
         const timer = setTimeout(() => {
@@ -57,7 +56,7 @@ export default class KubernetesClient {
                 conditions.RoutesReady === 'True' &&
                 conditions.Ready === 'True') {
               clearTimeout(timer)
-              resolve(service.object.status.url)
+              resolve()
             }
           }
         })

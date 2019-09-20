@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`containers controller accepts POST request with valid manifest 1`] = `
+Object {
+  "manifestHash": "73vneknj64kajk3f5xcf5ckknvpbwihjcal7bff7sj26y3pnnjha",
+  "url": "http://73vneknj64kajk3f5xcf5ckknvpbwihjcal7bff7sj26y3pnnjha.localhost",
+}
+`;

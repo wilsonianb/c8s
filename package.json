@@ -18,8 +18,7 @@
     "schema-to-tsd": "node scripts/build-schema-types",
     "compile-ts": "tsc --project .",
     "lint": "tslint --project .",
-    "pretest": "npm run build",
-    "test": "npm run lint && nyc mocha",
+    "test": "npm run lint && jest",
     "watch": "mocha-typescript-watch",
     "prepare": "npm run build",
     "start": "node src/index.js"
@@ -62,54 +61,33 @@
     "reduct": "^3.2.0",
     "riverpig": "^1.1.3",
     "thirty-two": "^1.0.2",
-    "through2": "^2.0.3"
+    "through2": "^3.0.1"
   },
   "devDependencies": {
     "@types/boom": "^7.2.0",
-    "@types/chai": "^4.1.3",
-    "@types/chai-as-promised": "^7.1.0",
     "@types/debug": "0.0.30",
-    "@types/fs-extra": "^5.0.2",
+    "@types/enzyme": "^3.10.3",
+    "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/hapi__h2o2": "^8.3.0",
     "@types/hapi__inert": "^5.2.0",
     "@types/hapi__vision": "^5.5.1",
-    "@types/mocha": "^5.2.0",
+    "@types/jest": "^24.0.18",
     "@types/node": "^12.7.5",
     "@types/react": "^16.9.2",
     "@types/react-dom": "^16.9.0",
-    "@types/sinon": "^4.3.1",
     "@types/through2": "^2.0.33",
-    "chai": "^4.1.2",
-    "chai-as-promised": "^7.1.1",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "enzyme-to-json": "^3.4.0",
+    "jest": "^24.9.0",
+    "jest-enzyme": "^7.1.1",
     "json-schema-to-typescript": "^5.5.0",
-    "mocha": "^5.1.1",
-    "mocha-typescript": "^1.1.12",
-    "nyc": "^14.1.1",
-    "sinon": "^5.0.4",
-    "source-map-support": "^0.5.5",
+    "ts-jest": "^24.1.0",
     "ts-node": "^6.0.2",
     "tslint": "^5.20.0",
     "tslint-config-standard": "^8.0.1",
     "typescript": "^3.6.3",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.8"
-  },
-  "nyc": {
-    "check-coverage": false,
-    "lines": 80,
-    "statements": 80,
-    "functions": 80,
-    "branches": 80,
-    "include": [
-      "src/**/*.js"
-    ],
-    "exclude": [
-      "test/**/*.js"
-    ],
-    "reporter": [
-      "lcov",
-      "text-summary"
-    ],
-    "all": true
   }
 }

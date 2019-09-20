@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<App /> matches snapshot 1`] = `
+<App
+  codiusVersion="0.0.1"
+>
+  <WebMonetizationLoader>
+    <p>
+      Sorry! You need 
+      <a
+        href="https://webmonetization.org"
+      >
+        Web Monetization
+      </a>
+       to view this content.
+    </p>
+  </WebMonetizationLoader>
+</App>
+`;

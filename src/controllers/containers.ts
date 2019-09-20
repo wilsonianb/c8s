@@ -1,5 +1,5 @@
-import * as Hapi from '@hapi/hapi'
-import * as Boom from 'boom'
+import { Server, ResponseToolkit } from '@hapi/hapi'
+import Boom from 'boom'
 import { Injector } from 'reduct'
 import { ContainerRequest } from '../schemas/ContainerRequest'
 import KubernetesClient from '../services/KubernetesClient'
@@ -15,11 +15,11 @@ export interface PostContainerResponse {
   manifestHash: string
 }
 
-export default function (server: Hapi.Server, deps: Injector) {
+export default function (server: Server, deps: Injector) {
   const kubernetesClient = deps(KubernetesClient)
   const manifestParser = deps(ManifestParser)
 
-  async function postContainer (request: any, h: Hapi.ResponseToolkit): Promise<PostContainerResponse> {
+  async function postContainer (request: any, h: ResponseToolkit): Promise<PostContainerResponse> {
     const serviceSpec = manifestParser.manifestToKnativeServiceSpec(
       request.payload['manifest'],
       request.payload['private'] || {}

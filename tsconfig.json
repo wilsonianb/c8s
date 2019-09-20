@@ -10,7 +10,14 @@
     "inlineSources": true,
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
-    "jsx": "react"
+    "jsx": "react",
+    "esModuleInterop": true
   },
-  "compileOnSave": true
+  "compileOnSave": true,
+  "exclude": [
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "src/setupTests.ts"
+  ]
 }
