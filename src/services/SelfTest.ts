@@ -4,7 +4,6 @@ import { SelfTestConfig } from '../schemas/SelfTestConfig'
 import { SelfTestStats } from '../schemas/SelfTestStats'
 import { create as createLogger } from '../common/log'
 const log = createLogger('SelfTest')
-import * as WebSocket from 'ws'
 const manifestJson = require('../util/self-test-manifest.json')
 import axios from 'axios'
 import * as crypto from 'crypto'
@@ -12,7 +11,6 @@ export default class SelfTest {
   public selfTestSuccess: boolean
   private uploadSuccess: boolean
   private httpSuccess: boolean
-  private wsSuccess: boolean
   private running: boolean
   private config: Config
   private testConfig: SelfTestConfig
@@ -22,7 +20,6 @@ export default class SelfTest {
     this.selfTestSuccess = false
     this.uploadSuccess = false
     this.httpSuccess = false
-    this.wsSuccess = false
     this.running = true
     this.testConfig = this.config.selfTestConfig
   }
@@ -135,57 +132,12 @@ export default class SelfTest {
           }
         }
 
-        const webSocketPromise = () => {
-          return new Promise((resolve, reject) => {
-            const ws = new WebSocket(`${url.protocol === 'https' ? 'wss' : 'ws'}://${url.host}`)
-            ws.on('open', () => {
-              log.debug('Web sockets Pod received request')
-            })
-
-            ws.on('message', (message: string) => {
-              let finalMessage = JSON.parse(message)
-              if (finalMessage.websocketEnabled) {
-                this.wsSuccess = true
-                resolve()
-              }
-            })
-
-            ws.on('error', (err: any) => {
-              log.error('Error on connection for websockets', err)
-              this.selfTestSuccess = false
-              this.wsSuccess = false
-              reject(new Error('could not connect to pod over websockets'))
-            })
-          })
-        }
-
-        const wsTimeoutPromise = () => {
-          return new Promise((resolve, reject) => {
-            let timeout = setTimeout(function () {
-              clearTimeout(timeout)
-              reject(new Error('could not upload pod to server due to websocket timeout'))
-            }, 10000)
-          })
-        }
-
-        log.info('Starting Websocket Test...')
-        try {
-          await Promise.race([
-            webSocketPromise(),
-            wsTimeoutPromise()
-          ])
-          this.wsSuccess = true
-          log.info('Codius Host Self Test successfully tested WebSockets')
-        } catch (err) {
-          log.error('Error occurred while testing WebSockets err=', err)
-        }
-
-        this.selfTestSuccess = this.wsSuccess && this.uploadSuccess && this.httpSuccess
+        this.selfTestSuccess = this.uploadSuccess && this.httpSuccess
         this.running = false
         if (this.selfTestSuccess) {
-          log.info('Self test successful:', this.selfTestSuccess, ' Upload success=', this.uploadSuccess, ' HTTP success=', this.httpSuccess, ' WebSocket success=', this.wsSuccess)
+          log.info('Self test successful:', this.selfTestSuccess, ' Upload success=', this.uploadSuccess, ' HTTP success=', this.httpSuccess)
         } else {
-          log.error('Self test failed: Upload Status=', this.uploadSuccess, ' Http Connection=', this.httpSuccess, ' WebSocket Connection=', this.wsSuccess)
+          log.error('Self test failed: Upload Status=', this.uploadSuccess, ' Http Connection=', this.httpSuccess)
           throw new Error('One or more components of Self Test have failed.')
         }
       } else {
@@ -197,7 +149,7 @@ export default class SelfTest {
       log.error(err)
       this.running = false
       this.selfTestSuccess = false
-      throw new Error('Self test failed: Upload Status=' + this.uploadSuccess + ' Http Connection=' + this.httpSuccess + ' WebSocket Connection=' + this.wsSuccess)
+      throw new Error('Self test failed: Upload Status=' + this.uploadSuccess + ' Http Connection=' + this.httpSuccess)
     }
   }
 
@@ -219,7 +171,6 @@ export default class SelfTest {
       selfTestSuccess: this.selfTestSuccess,
       uploadSuccess: this.uploadSuccess,
       httpSuccess: this.httpSuccess,
-      wsSuccess: this.wsSuccess,
       running: this.running
     }
   }

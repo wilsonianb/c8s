@@ -10,9 +10,6 @@
       "httpSuccess": {
           "type": "boolean"
       },
-      "wsSuccess": {
-          "type": "boolean"
-      },
       "running": {
           "type": "boolean"
       }

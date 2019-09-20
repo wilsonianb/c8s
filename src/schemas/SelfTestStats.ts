@@ -8,6 +8,5 @@ export interface SelfTestStats {
   selfTestSuccess?: boolean;
   uploadSuccess?: boolean;
   httpSuccess?: boolean;
-  wsSuccess?: boolean;
   running?: boolean;
 }
