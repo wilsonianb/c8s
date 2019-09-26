@@ -1,5 +1,5 @@
 import { Server, ResponseToolkit } from '@hapi/hapi'
-import Boom from 'boom'
+import Boom from '@hapi/boom'
 import { Injector } from 'reduct'
 import { URL } from 'url'
 import { ContainerRequest } from '../schemas/ContainerRequest'
@@ -51,7 +51,7 @@ export default function (server: Server, deps: Injector) {
     handler: postContainer,
     options: {
       validate: {
-        payload: Enjoi(ContainerRequest),
+        payload: Enjoi.schema(ContainerRequest),
         failAction: async (req, h, err) => {
           log.debug('validation error. error=' + (err && err.message))
           throw Boom.badRequest('Invalid request payload input')
