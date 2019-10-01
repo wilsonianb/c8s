@@ -42,6 +42,7 @@ export class Manifest {
       apiVersion: 'serving.knative.dev/v1alpha1',
       kind: 'Service',
       metadata: {
+        // name must be a DNS 1035 label so we prefix with an alphabetic character
         name: `proxy-${this.hash}`,
         namespace: this.config.k8sNamespace,
         labels: {
@@ -95,7 +96,7 @@ export class Manifest {
     }, {
       name: 'CODIUS_HOST',
       // TODO: if this URI resolves to 127.0.0.1 it won't be accesible to
-      // the contract from inside of hyper
+      // the contract from inside the container
       value: this.config.publicUri
     }, {
       name: 'CODIUS_MANIFEST_HASH',
