@@ -2,7 +2,6 @@ import * as Hapi from '@hapi/hapi'
 import registerContainersController from '../controllers/containers'
 import registerStaticController from '../controllers/static'
 import registerProxyController from '../controllers/proxy'
-import SelfTestCheck from '../services/SelfTestCheck'
 import { Injector } from 'reduct'
 import * as Inert from '@hapi/inert'
 import * as Vision from '@hapi/vision'
@@ -15,12 +14,10 @@ const log = createLogger('HttpServer')
 
 export default class HttpServer {
   private config: Config
-  private selfTestCheck: SelfTestCheck
   private server: Hapi.Server
 
   constructor (deps: Injector) {
     this.config = deps(Config)
-    this.selfTestCheck = deps(SelfTestCheck)
     this.server = new Hapi.Server({
       uri: this.config.publicUri.replace(/\/+$/, ''),
       address: this.config.bindIp,
@@ -43,7 +40,6 @@ export default class HttpServer {
 
   async init () {
     await this.server.register({ plugin: require('@hapi/h2o2') })
-    await this.server.register(this.selfTestCheck.checkSelfTestPlugin)
     await this.server.register(Inert)
     await this.server.register(Vision)
     this.server.views({
