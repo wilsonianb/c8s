@@ -1,8 +1,8 @@
 {
-  "name": "codiusd",
-  "version": "1.2.5",
-  "description": "Codius Host Software",
-  "homepage": "https://github.com/codius/codiusd#readme",
+  "name": "c8s",
+  "version": "0.0.1",
+  "description": "Serverless Codius Host Software",
+  "homepage": "https://github.com/codius/c8s#readme",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "files": [
@@ -26,7 +26,7 @@
   "bin": "./src/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/codius/codiusd.git"
+    "url": "git+https://github.com/codius/c8s.git"
   },
   "keywords": [
     "hosting",
@@ -40,7 +40,7 @@
   "author": "Codius Team <info@codius.org>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/codius/codiusd/issues"
+    "url": "https://github.com/codius/c8s/issues"
   },
   "dependencies": {
     "@hapi/boom": "^7.4.11",
