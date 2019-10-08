@@ -90,31 +90,6 @@ jobs:
               docker push "${DOCKER_REPO}/codiusd:${CODIUSD_VERSION}"
             fi
 
-  publish_to_npm:
-    docker:
-      - image: circleci/node:10
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run: mv npmrc-env .npmrc
-
-      # we need to install dependencies in order to publish
-      - run: npm install
-
-      - run:
-          name: Publish to NPM (only if a new version has been tagged)
-          command: if [ "$(npm show codiusd version)" != "$(npx -c 'echo "$npm_package_version"')" ] ; then npm publish ; fi
-
 workflows:
   version: 2
   build:
@@ -124,10 +99,3 @@ workflows:
       - build-publish-image:
           requires:
             - build_node_v10
-      - publish_to_npm:
-          requires:
-            - build_node_v10
-          filters:
-            branches:
-              only:
-                - master
