@@ -51,51 +51,9 @@ jobs:
 
       - run: npm test
 
-  build-publish-image:
-    docker:
-      - image: docker:18.09.1-git
-    steps:
-      - checkout
-      - setup_remote_docker
-
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update nodejs nodejs-npm
-
-      - restore_cache:
-          keys:
-            - v1-{{ .Branch }}
-          paths:
-            - /caches/codiusd.tar
-
-      - run:
-          name: Build Docker image
-          command: |
-            docker build \
-              -t codiusd \
-              .
-      - save_cache:
-          key: v1-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/codiusd.tar
-
-      - deploy:
-          name: Push Docker image
-          command: |
-            CODIUSD_VERSION=$(npx -c 'echo "$npm_package_version"')
-            if [ "$(npm show codiusd version)" != "${CODIUSD_VERSION}" ]; then
-              docker login -u $DOCKER_USER -p $DOCKER_PASS
-              docker tag codiusd "${DOCKER_REPO}/codiusd:${CODIUSD_VERSION}"
-              docker push "${DOCKER_REPO}/codiusd:${CODIUSD_VERSION}"
-            fi
-
 workflows:
   version: 2
   build:
     jobs:
       - build_node_v10
       - build_node_v8
-      - build-publish-image:
-          requires:
-            - build_node_v10
