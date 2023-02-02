@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: c8s
+  namespace: c8s
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    ingress.kubernetes.io/ssl-redirect: "true"
+    ingress.kubernetes.io/hsts-max-age: "63072000"
+    ingress.kubernetes.io/hsts-include-subdomains: "true"
+    ingress.kubernetes.io/hsts-preload: "true"
+    ingress.kubernetes.io/frame-deny: "true"
+    ingress.kubernetes.io/content-type-nosniff: "true"
+    ingress.kubernetes.io/browser-xss-filter: "true"
+spec:
+  tls:
+  - hosts:
+    - codius.example.com
+    - "*.codius.example.com"
+    secretName: codiusd-certificate
+  rules:
+  - host: "codius.example.com"
+    http: &http_rules
+      paths:
+      - backend:
+          serviceName: c8s-service
+          servicePort: 80
+  - host: "*.codius.example.com"
+    http: *http_rules
