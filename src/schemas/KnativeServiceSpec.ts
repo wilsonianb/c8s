@@ -10,9 +10,6 @@ export interface KnativeServiceSpec {
   metadata: {
     name: string;
     namespace: string;
-    labels: {
-      "serving.knative.dev/visibility": "cluster-local";
-    };
     annotations: {
       manifestHash: string;
     };

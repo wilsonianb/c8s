@@ -160,3 +160,45 @@ spec:
         ports:
         - containerPort: 3000
       serviceAccountName: c8s
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: c8s
+  namespace: c8s
+spec:
+  tls:
+  - hosts:
+    - "*.c8s.fc.suidoc.net"
+    secretName: codiusd-certificate
+  rules:
+  - host: "*.c8s.fc.suidoc.net"
+    http:
+      paths:
+      - backend:
+          serviceName: c8s-9d7wz
+          servicePort: 80
+---
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  name: c8s
+  namespace: gloo-system
+spec:
+  virtualHost:
+    domains:
+    - fc.suidoc.net
+    - '*.fc.suidoc.net'
+    routes:
+    - matcher:
+        regex: .*
+      routeAction:
+        single:
+          upstream:
+            name: c8s-c8s-dj4w6-80
+            namespace: gloo-system
+      routePlugins:
+        retries:
+          numRetries: 3
+          perTryTimeout: 600s
+        timeout: 600s

@@ -45,9 +45,6 @@ export class Manifest {
         // name must be a DNS 1035 label so we prefix with an alphabetic character
         name: `proxy-${this.hash}`,
         namespace: this.config.k8sNamespace,
-        labels: {
-          'serving.knative.dev/visibility': 'cluster-local'
-        },
         annotations: {
           manifestHash: this.hash
         }

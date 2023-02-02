@@ -20,17 +20,6 @@
         "namespace": {
           "type": "string"
         },
-        "labels": {
-          "type": "object",
-          "properties": {
-            "serving.knative.dev/visibility": {
-              "type": "string",
-              "enum": [ "cluster-local" ]
-            }
-          },
-          "required": [ "serving.knative.dev/visibility" ],
-          "additionalProperties": false
-        },
         "annotations": {
           "type": "object",
           "properties": {
@@ -42,7 +31,7 @@
           "additionalProperties": false
         }
       },
-      "required": [ "name", "namespace", "labels", "annotations" ],
+      "required": [ "name", "namespace", "annotations" ],
       "additionalProperties": false
     },
     "spec": {

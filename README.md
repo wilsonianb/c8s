@@ -13,8 +13,7 @@
 
 ## Prerequisites
 
-* CentOS 7 or higher
-* A processor with [virtualization support](https://wiki.centos.org/HowTos/KVM#head-6cbcdf8f149ebcf19d53199a30eb053a9fc482db)
+* Kubernetes v??? +
 
 ## Installation
 

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { withFormik, FormikBag, FormikProps, FormikErrors, Form, Field, FieldArray, ArrayHelpers } from 'formik'
 import { Manifest, ManifestOpts, EnvVar } from '../Manifest'
+const { useMonetizationState } = require('react-web-monetization')
 
 interface OtherProps {
   codiusVersion: string
@@ -10,6 +11,10 @@ const InnerForm = (props: OtherProps & FormikProps<ManifestOpts>) => {
   const { touched, errors, isSubmitting, status } = props
   return (
     <Form>
+      <div>
+        Deploy a <a href='https://github.com/knative/serving/blob/master/docs/runtime-contract.md'>serverless</a> web application.
+        Visitors using <a href='https://webmonetization.org/'>Web Monetization</a> will be able to access it in the browser.
+      </div>
       <label>
         Docker container image URL:
         <Field type='text' name='image' placeholder='docker.io/user/image:tag' autoFocus />
@@ -117,6 +122,7 @@ const ContainerForm = withFormik<MyFormProps, ManifestOpts>({
 
   handleSubmit: (values: ManifestOpts, { props, setStatus, setSubmitting }: FormikBag<MyFormProps, ManifestOpts>) => {
     const manifest = new Manifest(values)
+    const { requestId } = useMonetizationState()
     setStatus({
       error: undefined,
       containerUrl: undefined,
@@ -125,7 +131,8 @@ const ContainerForm = withFormik<MyFormProps, ManifestOpts>({
     return fetch('/containers', {
       headers: {
         Accept: `application/codius-v${props.codiusVersion}+json`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Web-Monetization-Id': requestId
       },
       method: 'POST',
       body: JSON.stringify({
